@@ -27,7 +27,7 @@ module TestBoosters
       end
 
       def all_files
-        @all_files ||= begin
+        @all_files ||= ENV["TEST_BOOSTERS_TEST_FILE_LIST"]&.split || begin
           files = Dir[@file_pattern].sort
           files -= Dir[@exclude_pattern] if @exclude_pattern
           files

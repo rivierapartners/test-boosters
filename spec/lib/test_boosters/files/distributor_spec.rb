@@ -23,6 +23,19 @@ describe TestBoosters::Files::Distributor do
   subject(:distributor) { described_class.new(@split_configuration_path, @file_pattern, @exclude_pattern, 10) }
 
   describe "#all_files" do
+    context "when TEST_BOOSTERS_TEST_FILE_LIST environment variable is set" do
+      it "returns the files specified in the variable" do
+        ENV["TEST_BOOSTERS_TEST_FILE_LIST"] = "#{@base_path}/spec/a_spec.rb #{@base_path}/spec/lib/b_spec.rb"
+
+        expect(distributor.all_files).to eq([
+          "#{@base_path}/spec/a_spec.rb",
+          "#{@base_path}/spec/lib/b_spec.rb"
+        ].sort)
+
+        ENV.delete("TEST_BOOSTERS_TEST_FILE_LIST")
+      end
+    end
+
     it "returns all files that match the pattern" do
       expect(distributor.all_files).to eq([
         "#{@base_path}/spec/a_spec.rb",
